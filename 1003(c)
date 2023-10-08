@@ -1,0 +1,60 @@
+#include<stdio.h>
+int main()
+{
+
+	int n, i = 0, result[100], j;
+	char s;
+	scanf("%d", &n);
+	getchar();
+	while (n--)
+	{
+		int judge = 1, set = 0, a=0,b=0,c=0,judgeA=0;
+		while ((s = getchar()) != '\n')
+		{
+			if (s != 'A' && s != 'P' && s != 'T')
+				judge = 0;
+			if (set == 0)
+			{
+				if (s == 'A')
+					a++;
+				else if (s == 'P')
+					set = 1;
+				else
+					judge = 0;
+			}
+			else if (set == 1)
+			{
+				if (s == 'A')
+				{
+					b++;
+					judgeA++;
+				}
+				else if (s == 'T')
+					set = 2;
+				else
+					judge = 0;
+			}
+			else if (set == 2)
+			{
+				if (s == 'A')
+					c++;
+				else
+					judge = 0;
+			}
+		}
+		if ((judge == 0) || (judge == 1 && a * b != c) || judgeA == 0||set<2)
+			result[i] = 0;
+		else if (a * b == c && judge == 1 && judgeA > 0&&set==2)
+			result[i] = 1;
+		i++;
+
+	}
+	for (j = 0; j < i; j++)
+	{
+		if (result[j] == 1)
+			printf("YES\n");
+		else if (result[j] == 0)
+			printf("NO\n");
+	}
+	return 0;
+}

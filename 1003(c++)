@@ -2,58 +2,46 @@
 #include <string>
 using namespace std;
 
-// 判断字符串是否只包含 P, A, T 三种字符
-bool is_valid(const string& s) {
+bool is_valid(string s) {
+    // 判断字符串是否只包含 P, A, T 三种字符
     for (char c : s) {
         if (c != 'P' && c != 'A' && c != 'T') {
             return false;
         }
     }
-    return true;
-}
-
-// 判断字符串是否满足 aPbTc 或 aPbATca 的形式，其中 a, b, c 是由 A 组成的字符串
-bool is_correct(const string& s) {
-    int p = -1, t = -1; // 记录 P 和 T 的位置
-    int a = 0, b = 0, c = 0; // 记录 a, b, c 的长度
-    for (int i = 0; i < s.size(); i++) {
-        if (s[i] == 'P') {
-            if (p == -1) { // 第一次遇到 P
-                p = i; // 记录 P 的位置
-                a = i; // 计算 a 的长度
-            } else { // 已经有 P 了，不符合规则
-                return false;
-            }
-        } else if (s[i] == 'T') {
-            if (t == -1) { // 第一次遇到 T
-                t = i; // 记录 T 的位置
-                b = i - p - 1; // 计算 b 的长度
-            } else { // 已经有 T 了，不符合规则
-                return false;
-            }
-        }
-    }
-    if (p == -1 || t == -1) { // 没有 P 或 T，不符合规则
+    // 判断字符串是否满足 xPATx 的形式，其中 x 是空字符串或由 A 组成的字符串
+    int p = s.find('P'); // P 的位置
+    int t = s.find('T'); // T 的位置
+    if (p == string::npos || t == string::npos || p > t) {
         return false;
     }
-    c = s.size() - t - 1; // 计算 c 的长度
-    if (b == 0) { // 没有 b，即形如 xPATx 的字符串
-        return a == c; // 检查 a 和 c 是否相等
-    } else { // 有 b，即形如 aPbATca 的字符串
-        return a * b == c; // 检查 a * b 是否等于 c
+    string a = s.substr(0, p); // P 前面的字符串
+    string b = s.substr(p + 1, t - p - 1); // P 和 T 之间的字符串
+    string c = s.substr(t + 1); // T 后面的字符串
+    if (b.empty()) {
+        return false; // P 和 T 相邻，不符合条件
     }
+    if (a == b && b == c) {
+        return true; // 字符串是 PAT 的形式
+    }
+    // 判断字符串是否满足 aPbTc 的形式，其中 a, b, c 是空字符串或由 A 组成的字符串
+    // 并且满足 aPbATca 的形式，即 c 的长度等于 a 的长度乘以 b 的长度
+    if (c.length() == a.length() * b.length()) {
+        return true;
+    }
+    return false;
 }
 
 int main() {
-    int n; // 需要检测的字符串个数
-    string s; // 存储输入的字符串
-    cin >> n; // 输入 n
+    int n; // 测试用例的个数
+    cin >> n;
     while (n--) {
-        cin >> s; // 输入一个字符串
-        if (is_valid(s) && is_correct(s)) { // 检查是否有效且正确
-            cout << "YES\n"; // 输出 YES
+        string s; // 待检测的字符串
+        cin >> s;
+        if (is_valid(s)) {
+            cout << "YES" << endl; // 字符串可以获得答案正确
         } else {
-            cout << "NO\n"; // 输出 NO
+            cout << "NO" << endl; // 字符串不可以获得答案正确
         }
     }
     return 0;
